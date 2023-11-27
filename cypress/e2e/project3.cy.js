@@ -11,16 +11,12 @@ describe("project3", () => {
     });
 
     it("Test Case 01 - Validate the default Book your trip form", () => {
-        cy.get(".Projects_container__04CSc").as("form")
         
-        cy.get(".radio > input").eq(0).should("be.checked")
-        cy.get(".radio > input").eq(1).should("not.be.checked")
+        cy.getRadioButton(0).should("be.checked")
+        cy.getRadioButton(1).should("not.be.checked")
 
-        cy.get("@form").nextAll().each(($ele, idx) => {
-            cy.wrap($ele).should("be.visible")
-            cy.get($ele).each(($child, idx) => {
-                cy.wrap($child).should("be.visible", "not.be.enabled")
-            })
+        cy.getFormElement().each(($ele, idx) => {
+            cy.checkVisibility($ele)
         })
 
         const data = ["1", "Adult (16-64)"]
@@ -33,16 +29,11 @@ describe("project3", () => {
     })
 
     it("Test Case 02 - Validate the Book your trip form when Round trip is selected", () => {
-        cy.get(".radio > input").eq(1).check().should('be.checked')
-        cy.get(".radio > input").eq(0).should("not.be.checked")
+        cy.getRadioButton(1).check().should('be.checked')
+        cy.getRadioButton(0).should("not.be.checked")
 
-        cy.get(".Projects_container__04CSc").as("form")
-
-        cy.get("@form").each(($ele, idx) => {
-            cy.wrap($ele).should("be.visible")
-            cy.get($ele).each(($child, idx) => {
-                cy.wrap($child).should("be.visible")
-            })
+        cy.getFormElement().each(($ele, idx) => {
+            cy.checkVisibility($ele)
         })
 
         const data = ["1", "Adult (16-64)"]
@@ -55,7 +46,7 @@ describe("project3", () => {
     })
 
     it("Test Case 03 - Validate the booking for 1 passenger and one way", () => {
-        cy.get(".radio > input").eq(0).click().should("be.checked")
+        cy.getRadioButton(0).click().should("be.checked")
         const data = ["Business", "Illinois", "Florida", "1", "Senior (65+)"]
         
         cy.get(".field .select").children().each(($el, idx) => {
@@ -73,7 +64,7 @@ describe("project3", () => {
     })
 
     it("Test Case 04 - Validate the booking for 1 passenger and round trip", () => {
-        cy.get(".radio > input").eq(1).click().should("be.checked")
+        cy.getRadioButton(1).click().should("be.checked")
         const data = ["First", "California", "Illinois", "1", "Adult (16-64)"]
 
         cy.get(".field .select").children().each(($el, idx) => {
@@ -95,7 +86,20 @@ describe("project3", () => {
         })
     })
 
-    it.only("Test Case 05 - Validate the booking for 2 passengers and one way", () => {
-        
+    it("Test Case 05 - Validate the booking for 2 passengers and one way", () => {
+        cy.getRadioButton(0).click().should("be.checked")
+
+        const data = ["Premium Economy", "New York", "Texas", "2", "Adult (16-64)", "Child (2-11)"]
+        cy.get(".field .select").children().each(($el, idx) => {
+            cy.wrap($el).select(data[idx])
+        })
+        cy.get(":nth-child(5) > .control > .react-datepicker-wrapper > .react-datepicker__input-container > input").clear().type(bookingPage.pickNextDay())
+        cy.get('.react-datepicker__month-container').invoke('css', 'display', 'none')
+        cy.get('.Button_c_button__TmkRS').click()
+
+        const updatedData = ["DEPART", "NY to TX", "Number of Passengers: 2", "Passenger 1: Adult (16-64)","Passenger 2: Child (2-11)", "Cabin class: Premium Economy"]
+        updatedData.forEach(el => {
+            cy.contains(el).should("exist")
+        })
     })
 })

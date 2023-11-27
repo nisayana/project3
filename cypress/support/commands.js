@@ -23,3 +23,17 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("getFormElement", () => {
+    return cy.get(".Projects_container__04CSc").as("form")
+})
+
+Cypress.Commands.add("checkVisibility", ($elements) => {
+    $elements.each(($el, idx) => {
+        cy.wrap($el).should("be.visible")
+    })
+})
+
+Cypress.Commands.add("getRadioButton", (idx) => {
+    return cy.get(".radio > input").eq(idx)
+})
