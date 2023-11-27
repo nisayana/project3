@@ -1,0 +1,9 @@
+node_modules
+vendor
+*.log
+*.tmp
+*.cache
+*.idea
+*.vscode
+myfile.txt
+mydirectory/*
